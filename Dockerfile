@@ -1,18 +1,10 @@
-# Use the official Maven image to build the application
+# Use Maven to build the app
 FROM maven:3.6.3-jdk-8 AS build
-
-# Set the working directory inside the container
 WORKDIR /app
-
-# Copy the pom.xml file and the source code
 COPY pom.xml .
 COPY src ./src
-
-# Package the application
 RUN mvn clean package
 
-# Use the official Tomcat image to run the application
+# Use Tomcat to deploy the app
 FROM tomcat:9.0
-
-# Copy the generated WAR file from the build stage
-COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /app/target/java-maven-calculator-web-app-1.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
